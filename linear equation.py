@@ -58,7 +58,8 @@ def GaussianElimination(eqn):
         for j in range(1, number_of_column - 1):
             if equation[i][j] != 0:
                 for k in range(i-1, -1, -1):
-                    equation[k] = RowSubtract(equation[i], equation[k])
+                    if equation[k][j] != 0:
+                        equation[k] = RowSubtract(equation[i], equation[k])
                 break
 
     for row in equation:
