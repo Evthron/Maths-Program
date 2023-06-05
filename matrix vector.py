@@ -116,17 +116,42 @@ def InverseMatrix(eqn):
     return inverted_matrix
 
 
-vector = [0, 4, 16, 36, 64, 100]
-matrixA = [[0, 1],
+#vector = [0, 1, 4, 9, 16, 25, 36, 49, 64, 81, 100]
+
+"""matrixA = [[0, 1],
+           [1, 1],
            [2, 1],
+           [3, 1],
            [4, 1],
+           [5, 1],
            [6, 1],
+           [7, 1],
            [8, 1],
-           [10, 1]]
+           [9, 1],
+           [10, 1]]"""
+vector = list()
+matrixA = list()
+for i in range(1001):
+    matrixA.append([i/100, 1.0])
+    vector.append((i/100) ** 2)
+print(matrixA)
+print(vector)
+
 matrixAt = MatrixTranspose(matrixA)
 AtA = MatrixMultiplication(matrixAt, matrixA)
 inverse_AtA = InverseMatrix(AtA)
 final_matrix = MatrixMultiplication(matrixA, inverse_AtA)
 final_matrix = MatrixMultiplication(final_matrix, matrixAt)
 vector_projection = MatrixVectorMultiplication(final_matrix, vector)
-print(vector_projection)
+
+matrixA_augmented = matrixA[:]
+for i in range(len(vector_projection)):
+    matrixA_augmented[i].append(vector_projection[i])
+
+
+matrixA_augmented = GaussianElimination(matrixA_augmented)
+
+for i in matrixA_augmented:
+    print(i)
+
+# y = 10x - 16.65
