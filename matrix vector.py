@@ -124,25 +124,28 @@ def InverseMatrix(eqn):
 
     return inverted_matrix
 
-
-vector = [6, 0, 0]
-
-matrixA = [[0, 1],
-           [1, 1],
-           [2, 1]]
 """vector = list()
 matrixA = list()
 for i in range(1001):
     matrixA.append([i/100, 1.0])
     vector.append((i/100) ** 2)"""
 
-def VectorMatrixProjection(vector, matrixA):
+def ProjectionMatrix(matrixA):
     matrixAt = MatrixTranspose(matrixA)
     AtA = MatrixMultiplication(matrixAt, matrixA)
     inverse_AtA = InverseMatrix(AtA)
-    final_matrix = MultipleMatrixMultiplication(matrixA, inverse_AtA, matrixAt)
-    vector_projection = MatrixVectorMultiplication(final_matrix, vector)
-    return vector_projection
+    projection_matrix = MultipleMatrixMultiplication(matrixA, inverse_AtA, matrixAt)
+    return projection_matrix
+
+vector = [6, 0, 0]
+
+matrixA = [[1, 0],
+           [0, 1],
+           [0, 0],
+           [1, 1]]
+
+print(ProjectionMatrix(matrixA))
+
 
 
 def AugmentVector(matrix, vector):
