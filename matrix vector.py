@@ -87,11 +87,14 @@ def RowSubtract(row1, row2):
 def RowSwap(row1, row2):
     row1, row2 = row2, row1
 
-def GaussianElimination(eqn):
+def GaussianElimination(eqn, is_augmented = False):
     "找到該行一個非零的數，與其他所有行相減，使他們全部變爲0,下一列，找到一個除了上面用過那行以外的非零數，和其他所有行相減,直到行或列結束就停止記錄用過的行"
     matrix = eqn[:]
     number_of_row = len(matrix)
     number_of_column = len(matrix[0])
+    if is_augmented:
+        number_of_column -= 1
+
     number_of_max_square = min(number_of_row, number_of_column)
     #數值的總和應該叫 sum? total? number? count?
     #計數器應該叫 counter? number?
@@ -115,12 +118,6 @@ def GaussianElimination(eqn):
         RowStandardise(row)
 
     return matrix
-
-matrixA = [[1, 1, -1, 7],
-           [1, -1, 2, 3],
-           [2, 1, 1, 9]]
-
-PrintMatrix(GaussianElimination(matrixA))
 
 
 def InverseMatrix(eqn):
@@ -156,17 +153,23 @@ def ProjectionMatrix(matrixA):
     projection_matrix = MultipleMatrixMultiplication(matrixA, inverse_AtA, matrixAt)
     return projection_matrix
 
-vector = [6, 0, 0]
-
-matrixA = [[1, 0],
-           [0, 1],
-           [0, 0],
-           [1, 1]]
-
 def AugmentVector(matrix, vector):
     matrixA_augmented = matrix[:]
     for i in range(len(vector)):
         matrixA_augmented[i].append(vector[i])
     return matrixA_augmented
+
+
+vector = [0.5, 1, 2.5, 3]
+
+matrixA = [[0, 1],
+           [1, 1],
+           [2, 1],
+           [3, 1]]
+
+projected_vector = MatrixVectorMultiplication(ProjectionMatrix(matrixA), vector)
+augmented_matrixA = AugmentVector(matrixA, projected_vector)
+
+PrintMatrix(GaussianElimination(augmented_matrixA, True))
 
 # y = 10x - 16.65
