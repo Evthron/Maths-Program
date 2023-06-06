@@ -39,15 +39,6 @@ def MultipleMatrixMultiplication(*args):
             resultant_matrix = MatrixMultiplication(resultant_matrix, matrix)
     return resultant_matrix
 
-def AugmentedIdetity(mtx):
-    matrix = mtx[:]
-    matrix_size = len(matrix)
-    for row in matrix:
-        for j in range(matrix_size):
-            row.append(0.0)
-    for i in range(matrix_size):
-        matrix[i][i+matrix_size] = 1.0
-    return matrix
 
 
 def RowFillZero(row, column):
@@ -84,16 +75,16 @@ def RowSubtract(row1, row2):
         answer_row.append(row1_copy[i] - row2_copy[i])
     return answer_row
 
-def RowSwap(row1, row2):
-    row1, row2 = row2, row1
 
-def GaussianElimination(eqn, is_augmented = False):
+def GaussianElimination(eqn, is_fiding_solution = False, is_finding_inverse = False):
     "找到該行一個非零的數，與其他所有行相減，使他們全部變爲0,下一列，找到一個除了上面用過那行以外的非零數，和其他所有行相減,直到行或列結束就停止記錄用過的行"
     matrix = eqn[:]
     number_of_row = len(matrix)
     number_of_column = len(matrix[0])
-    if is_augmented:
+    if is_fiding_solution:
         number_of_column -= 1
+    elif is_finding_inverse:
+        number_of_column -= 3
 
     number_of_max_square = min(number_of_row, number_of_column)
     #數值的總和應該叫 sum? total? number? count?
@@ -117,26 +108,54 @@ def GaussianElimination(eqn, is_augmented = False):
     for row in matrix:
         RowStandardise(row)
 
+    # swapping rows
+    for column in range(number_of_max_square):
+        if matrix[column][column] == 0:
+            for row in range(number_of_row):
+                if matrix[row][column] != 0:
+                    matrix[column],matrix[row] = matrix[row], matrix[column]
+
     return matrix
 
+def Identity(matrix):
+    identity_matrix = list()
+    matrix_size = len(matrix)
+    for i in range(matrix_size):
+        identity_row = list()
+        for j in range(matrix_size):
+            if i == j:
+                identity_row.append(1.0)
+            else:
+                identity_row.append(0.0)
+        identity_matrix.append(identity_row)
+    return identity_matrix
 
-def InverseMatrix(eqn):
-    equation = eqn[:]
-    equation = AugmentedIdetity(equation)
-    number_of_row = len(equation)
-    number_of_column = len(equation[0])
-    equation = GaussianElimination(equation)
-    for i in range(number_of_row):
-        check = list()
-        for j in range(number_of_row):
-            check.append(0.0)
-        check[i] = 1.0
-        if equation[i][0:number_of_row] != check:
-            print("not invertible")
+def InverseMatrix(mtx):
+    matrix = mtx[:]
+    number_of_row = len(matrix)
+    number_of_column = len(matrix[0])
+    if number_of_row != number_of_column:
+        print("not square matrix, not invertible")
+        return
+    matrix_size = number_of_row
+
+    identity_matrix = Identity(matrix)
+    matrix = AugmentMatrix(matrix, identity_matrix)
+
+    matrix = GaussianElimination(matrix, is_finding_inverse=True)
+
+    verify_matrix = list()
+    for i in range(matrix_size):
+        verify_matrix.append(matrix[i][0:matrix_size])
+
+    print(verify_matrix)
+    if identity_matrix != verify_matrix:
+        print("can't return to identity matrix, not invertible")
+        return
 
     inverted_matrix = list()
-    for i in range(number_of_row):
-        inverted_matrix.append(equation[i][number_of_row:number_of_column])
+    for i in range(matrix_size):
+        inverted_matrix.append(matrix[i][matrix_size:])
 
     return inverted_matrix
 
@@ -159,17 +178,25 @@ def AugmentVector(matrix, vector):
         matrixA_augmented[i].append(vector[i])
     return matrixA_augmented
 
+def AugmentMatrix(matrix1, matrix2):
+    resultant_matrix = matrix1[:]
+    matrix2_transpose = MatrixTranspose(matrix2[:])
+    for vector in matrix2_transpose:
+        resultant_matrix = AugmentVector(resultant_matrix, vector)
+    return resultant_matrix
+
 
 vector = [0.5, 1, 2.5, 3]
 
-matrixA = [[0, 1],
-           [1, 1],
-           [2, 1],
-           [3, 1]]
+matrixA = [[0, 2, 2],
+           [1, 1, 1],
+           [0, 2, 0]]
 
-projected_vector = MatrixVectorMultiplication(ProjectionMatrix(matrixA), vector)
+PrintMatrix(InverseMatrix(matrixA))
+
+"""projected_vector = MatrixVectorMultiplication(ProjectionMatrix(matrixA), vector)
 augmented_matrixA = AugmentVector(matrixA, projected_vector)
 
-PrintMatrix(GaussianElimination(augmented_matrixA, True))
+PrintMatrix(GaussianElimination(augmented_matrixA, True))"""
 
 # y = 10x - 16.65
