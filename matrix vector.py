@@ -182,22 +182,17 @@ def AugmentMatrix(matrix1, matrix2):
 vector = list()
 matrixA = list()
 
-"""for i in range(101):
+for i in range(0, 101):
     matrixA.append([i/10, 1.0])
-    vector.append((i/10) ** 2)"""
-
-matrixA = [[1, 1],
-           [2, 1],
-           [3, 1],
-           [4, 1],
-           [5, 1],
-           [6, 1],
-           [7, 1]]
-vector = [1.5, 3.8, 6.7, 9.0, 11.2, 13.6, 16]
+    vector.append((i/10) ** 2)
 
 projected_vector = MatrixVectorMultiplication(ProjectionMatrix(matrixA), vector)
 augmented_matrixA = AugmentVector(matrixA, projected_vector)
-PrintMatrix(GaussianElimination(augmented_matrixA, is_fiding_solution=True))
+end_matrix = GaussianElimination(augmented_matrixA, is_fiding_solution=True)
+m = end_matrix[0][-1]
+c = end_matrix[1][-1]
+y = int(input())
+print((y - c)/m)
 
 def InputMatrix():
     row_number = int(input("Enter row_number: "))
