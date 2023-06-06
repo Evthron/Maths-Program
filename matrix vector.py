@@ -1,4 +1,3 @@
-
 def PrintMatrix(matrix):
     for row in matrix:
         print(row)
@@ -49,7 +48,7 @@ def RowFillZero(row, column):
 def RowStandardise(row):
     divisor = 0
     for i in range(len(row)):
-        if row[i] != 0:
+        if row[i] > 1.e-10:
             divisor = row[i]
             break
     if divisor != 0:
@@ -84,13 +83,13 @@ def GaussianElimination(eqn, is_fiding_solution = False, is_finding_inverse = Fa
     if is_fiding_solution:
         number_of_column -= 1
     elif is_finding_inverse:
-        number_of_column -= 3
+        number_of_column -= number_of_row
 
     number_of_max_square = min(number_of_row, number_of_column)
     #數值的總和應該叫 sum? total? number? count?
     #計數器應該叫 counter? number?
     # cardinal Ordinal
-    subtractor_row = list()
+    subtractor_row = 0
     used_row = list() #把初始化放在回圈外面!!!
     for column in range(number_of_max_square):
         #找非零行，用來減其他行的
@@ -148,7 +147,6 @@ def InverseMatrix(mtx):
     for i in range(matrix_size):
         verify_matrix.append(matrix[i][0:matrix_size])
 
-    print(verify_matrix)
     if identity_matrix != verify_matrix:
         print("can't return to identity matrix, not invertible")
         return
@@ -159,11 +157,6 @@ def InverseMatrix(mtx):
 
     return inverted_matrix
 
-"""vector = list()
-matrixA = list()
-for i in range(1001):
-    matrixA.append([i/100, 1.0])
-    vector.append((i/100) ** 2)"""
 
 def ProjectionMatrix(matrixA):
     matrixAt = MatrixTranspose(matrixA)
@@ -186,17 +179,24 @@ def AugmentMatrix(matrix1, matrix2):
     return resultant_matrix
 
 
-vector = [0.5, 1, 2.5, 3]
+vector = list()
+matrixA = list()
+for i in range(10):
+    matrixA.append([i, 1.0])
+    vector.append((i) ** 2)
 
-matrixA = [[0, 2, 2],
-           [1, 1, 1],
-           [0, 2, 0]]
-
-PrintMatrix(InverseMatrix(matrixA))
-
-"""projected_vector = MatrixVectorMultiplication(ProjectionMatrix(matrixA), vector)
+projected_vector = MatrixVectorMultiplication(ProjectionMatrix(matrixA), vector)
 augmented_matrixA = AugmentVector(matrixA, projected_vector)
+PrintMatrix(GaussianElimination(augmented_matrixA, is_fiding_solution=True))
 
-PrintMatrix(GaussianElimination(augmented_matrixA, True))"""
-
-# y = 10x - 16.65
+def InputMatrix():
+    row_number = int(input("Enter row_number: "))
+    column_number = int(input("Enter column number: "))
+    matrix = list()
+    for i in range(row_number):
+        row = input("Enter row: ").split()
+        for i in range(len(row)):
+            row[i] = float(row[i])
+        RowFillZero(row, column_number)
+        matrix.append(row)
+    return matrix
