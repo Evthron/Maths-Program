@@ -48,7 +48,7 @@ def RowFillZero(row, column):
 def RowStandardise(row):
     divisor = 0
     for i in range(len(row)):
-        if row[i] > 1.e-10:
+        if abs(row[i]) > 1e-10:
             divisor = row[i]
             break
     if divisor != 0:
@@ -181,9 +181,19 @@ def AugmentMatrix(matrix1, matrix2):
 
 vector = list()
 matrixA = list()
-for i in range(10):
-    matrixA.append([i, 1.0])
-    vector.append((i) ** 2)
+
+"""for i in range(101):
+    matrixA.append([i/10, 1.0])
+    vector.append((i/10) ** 2)"""
+
+matrixA = [[1, 1],
+           [2, 1],
+           [3, 1],
+           [4, 1],
+           [5, 1],
+           [6, 1],
+           [7, 1]]
+vector = [1.5, 3.8, 6.7, 9.0, 11.2, 13.6, 16]
 
 projected_vector = MatrixVectorMultiplication(ProjectionMatrix(matrixA), vector)
 augmented_matrixA = AugmentVector(matrixA, projected_vector)
