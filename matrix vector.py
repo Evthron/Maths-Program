@@ -1,3 +1,8 @@
+
+def PrintMatrix(matrix):
+    for row in matrix:
+        print(row)
+    print()
 def MatrixTranspose(matrix):
     transposed_matrix = list()
     for i in range(len(matrix[0])):
@@ -79,29 +84,43 @@ def RowSubtract(row1, row2):
         answer_row.append(row1_copy[i] - row2_copy[i])
     return answer_row
 
+def RowSwap(row1, row2):
+    row1, row2 = row2, row1
 
 def GaussianElimination(eqn):
-    equation = eqn[:]
-    number_of_row = len(equation)
-    number_of_column = len(equation[0])
-    RowStandardise(equation[0])
-    for i in range(number_of_column - 1):
-        for j in range(i + 1, number_of_row):
-            if equation[j][i] != 0:
-                equation[j] = RowSubtract(equation[i], equation[j])
-
-    for i in reversed(range(1, number_of_row)):
-        for j in range(1, number_of_column - 1):
-            if equation[i][j] != 0:
-                for k in range(i-1, -1, -1):
-                    if equation[k][j] != 0:
-                        equation[k] = RowSubtract(equation[i], equation[k])
+    "找到該行一個非零的數，與其他所有行相減，使他們全部變爲0,下一列，找到一個除了上面用過那行以外的非零數，和其他所有行相減,直到行或列結束就停止記錄用過的行"
+    matrix = eqn[:]
+    number_of_row = len(matrix)
+    number_of_column = len(matrix[0])
+    number_of_max_square = min(number_of_row, number_of_column)
+    #數值的總和應該叫 sum? total? number? count?
+    #計數器應該叫 counter? number?
+    # cardinal Ordinal
+    subtractor_row = list()
+    used_row = list() #把初始化放在回圈外面!!!
+    for column in range(number_of_max_square):
+        #找非零行，用來減其他行的
+        for row in range(number_of_row):
+            # row是行編號的意思
+            if (row not in used_row) and (matrix[row][column] != 0):
+                subtractor_row = row
                 break
 
-    for row in equation:
+        for row in range(number_of_row):
+            if row != subtractor_row and matrix[row][column] != 0:
+                matrix[row] = RowSubtract(matrix[row], matrix[subtractor_row])
+        used_row.append(subtractor_row)
+
+    for row in matrix:
         RowStandardise(row)
 
-    return equation
+    return matrix
+
+matrixA = [[1, 1, -1, 7],
+           [1, -1, 2, 3],
+           [2, 1, 1, 9]]
+
+PrintMatrix(GaussianElimination(matrixA))
 
 
 def InverseMatrix(eqn):
@@ -143,10 +162,6 @@ matrixA = [[1, 0],
            [0, 1],
            [0, 0],
            [1, 1]]
-
-print(ProjectionMatrix(matrixA))
-
-
 
 def AugmentVector(matrix, vector):
     matrixA_augmented = matrix[:]
