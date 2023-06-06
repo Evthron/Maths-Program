@@ -25,6 +25,15 @@ def MatrixMultiplication(matrix1, matrix2):
     resultant_matrix = MatrixTranspose(resultant_matrix)
     return(resultant_matrix)
 
+def MultipleMatrixMultiplication(*args):
+    resultant_matrix = list()
+    for matrix in args:
+        if resultant_matrix == list():
+            resultant_matrix = matrix
+        else:
+            resultant_matrix = MatrixMultiplication(resultant_matrix, matrix)
+    return resultant_matrix
+
 def AugmentedIdetity(mtx):
     matrix = mtx[:]
     matrix_size = len(matrix)
@@ -116,42 +125,30 @@ def InverseMatrix(eqn):
     return inverted_matrix
 
 
-#vector = [0, 1, 4, 9, 16, 25, 36, 49, 64, 81, 100]
+vector = [6, 0, 0]
 
-"""matrixA = [[0, 1],
+matrixA = [[0, 1],
            [1, 1],
-           [2, 1],
-           [3, 1],
-           [4, 1],
-           [5, 1],
-           [6, 1],
-           [7, 1],
-           [8, 1],
-           [9, 1],
-           [10, 1]]"""
-vector = list()
+           [2, 1]]
+"""vector = list()
 matrixA = list()
 for i in range(1001):
     matrixA.append([i/100, 1.0])
-    vector.append((i/100) ** 2)
-print(matrixA)
-print(vector)
+    vector.append((i/100) ** 2)"""
 
-matrixAt = MatrixTranspose(matrixA)
-AtA = MatrixMultiplication(matrixAt, matrixA)
-inverse_AtA = InverseMatrix(AtA)
-final_matrix = MatrixMultiplication(matrixA, inverse_AtA)
-final_matrix = MatrixMultiplication(final_matrix, matrixAt)
-vector_projection = MatrixVectorMultiplication(final_matrix, vector)
-
-matrixA_augmented = matrixA[:]
-for i in range(len(vector_projection)):
-    matrixA_augmented[i].append(vector_projection[i])
+def VectorMatrixProjection(vector, matrixA):
+    matrixAt = MatrixTranspose(matrixA)
+    AtA = MatrixMultiplication(matrixAt, matrixA)
+    inverse_AtA = InverseMatrix(AtA)
+    final_matrix = MultipleMatrixMultiplication(matrixA, inverse_AtA, matrixAt)
+    vector_projection = MatrixVectorMultiplication(final_matrix, vector)
+    return vector_projection
 
 
-matrixA_augmented = GaussianElimination(matrixA_augmented)
-
-for i in matrixA_augmented:
-    print(i)
+def AugmentVector(matrix, vector):
+    matrixA_augmented = matrix[:]
+    for i in range(len(vector)):
+        matrixA_augmented[i].append(vector[i])
+    return matrixA_augmented
 
 # y = 10x - 16.65
