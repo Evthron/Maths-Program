@@ -2,6 +2,14 @@ import copy
 
 
 class Matrix(list):
+    """
+    attribute: is_augmented
+    """
+
+    def __init__(self):
+        self.is_augmented = False
+        self.augmented_column_number = 0
+
     def __str__(self):
         a = copy.deepcopy(self)
         for i in range(len(a)):
@@ -10,13 +18,22 @@ class Matrix(list):
 
         result = "-------\n"
         for row in a:
-            result += " ".join(row)
+            variable_row = row[0:len(row) - self.augmented_column_number]
+            answer_row = row[-self.augmented_column_number:]
+            result += " ".join(variable_row)
+            if self.is_augmented:
+                result += "|" + " ".join(answer_row)
             result += "\n"
         result += "-------"
         return result
 
     def add_row(self, row):
-        self.append(row)
+        if self == Matrix():
+            self.append(row)
+        elif len(row) == len(self[0]):
+            self.append(row)
+        else:
+            raise Exception("matrix column number should be ", len(self[0]), "now get", len(row))
 
     def transpose(self):
         transposed_matrix = Matrix()
@@ -98,6 +115,8 @@ class Matrix(list):
         matrixA_augmented = copy.deepcopy(self)
         for i in range(len(vector)):
             matrixA_augmented[i].append(vector[i])
+        self.is_augmented = True
+        self.augmented_column_number = 1
         return matrixA_augmented
 
     def augment_matrix(self, matrix2):
@@ -105,6 +124,8 @@ class Matrix(list):
         matrix2_transpose = matrix2.transpose()
         for vector in matrix2_transpose:
             resultant_matrix = resultant_matrix.augment_vector(vector)
+        self.is_augmented = True
+        self.augmented_column_number = len(matrix2_transpose)
         return resultant_matrix
 
     def standardise(self):
@@ -207,19 +228,20 @@ def RowSubtract(row1, row2):
     return answer_row
 
 
-vector = list()
-matrixA = Matrix()
+def square_root_linear_approximate():
+    vector = list()
+    matrixA = Matrix()
 
-for i in range(0, 101):
-    matrixA.add_row([i/10, 1.0])
-    vector.append((i/10) ** 2)
+    precision = 10
+    for i in range(0, 10 * precision + 1):
+        matrixA.add_row([i/precision, 1.0])
+        vector.append((i/precision) ** 2)
 
-
-projected_vector = matrixA.projection().multiply_vector(vector)
-augmented_matrixA = matrixA.augment_vector(projected_vector)
-end_matrix = augmented_matrixA.gaussian_elimination(is_fiding_solution=True)
-m = end_matrix[0][-1]
-c = end_matrix[1][-1]
-y = int(input())
-print((y - c)/m)
+    projected_vector = matrixA.projection().multiply_vector(vector)
+    augmented_matrixA = matrixA.augment_vector(projected_vector)
+    end_matrix = augmented_matrixA.gaussian_elimination(is_fiding_solution=True)
+    m = end_matrix[0][-1]
+    c = end_matrix[1][-1]
+    y = int(input())
+    print((y - c)/m)
 
