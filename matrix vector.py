@@ -1,7 +1,24 @@
-def PrintMatrix(matrix):
-    for row in matrix:
-        print(row)
-    print()
+import copy
+
+
+class Matrix(list):
+    def __str__(self):
+        a = copy.deepcopy(self)
+        for i in range(len(a)):
+            for j in range(len(a[0])):
+                a[i][j] = str(a[i][j])
+
+        result = "-------\n"
+        for row in a:
+            result += " ".join(row)
+            result += "\n"
+        result += "-------"
+        return result
+
+    def add_row(self, row):
+        self.append(row)
+
+
 def MatrixTranspose(matrix):
     transposed_matrix = list()
     for i in range(len(matrix[0])):
@@ -180,11 +197,13 @@ def AugmentMatrix(matrix1, matrix2):
 
 
 vector = list()
-matrixA = list()
+matrixA = Matrix()
 
 for i in range(0, 101):
-    matrixA.append([i/10, 1.0])
+    matrixA.add_row([i/10, 1.0])
     vector.append((i/10) ** 2)
+
+print(matrixA)
 
 projected_vector = MatrixVectorMultiplication(ProjectionMatrix(matrixA), vector)
 augmented_matrixA = AugmentVector(matrixA, projected_vector)
