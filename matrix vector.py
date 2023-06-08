@@ -115,8 +115,8 @@ class Matrix(list):
         matrixA_augmented = copy.deepcopy(self)
         for i in range(len(vector)):
             matrixA_augmented[i].append(vector[i])
-        self.is_augmented = True
-        self.augmented_column_number = 1
+        matrixA_augmented.is_augmented = True
+        matrixA_augmented.augmented_column_number = 1
         return matrixA_augmented
 
     def augment_matrix(self, matrix2):
@@ -124,8 +124,8 @@ class Matrix(list):
         matrix2_transpose = matrix2.transpose()
         for vector in matrix2_transpose:
             resultant_matrix = resultant_matrix.augment_vector(vector)
-        self.is_augmented = True
-        self.augmented_column_number = len(matrix2_transpose)
+        resultant_matrix.is_augmented = True
+        resultant_matrix.augmented_column_number = len(matrix2_transpose)
         return resultant_matrix
 
     def standardise(self):
