@@ -22,18 +22,19 @@ class Matrix(list):
             answer_row = row[-self.augmented_column_number:]
             result += " ".join(variable_row)
             if self.is_augmented:
-                result += "|" + " ".join(answer_row)
+                result += " | " + " ".join(answer_row)
             result += "\n"
         result += "-------"
         return result
 
-    def add_row(self, row):
-        if self == Matrix():
-            self.append(row)
-        elif len(row) == len(self[0]):
-            self.append(row)
-        else:
-            raise Exception("matrix column number should be ", len(self[0]), "now get", len(row))
+    def add_row(self, *args):
+        for row in args:
+            if self == Matrix():
+                self.append(row)
+            elif len(row) == len(self[0]):
+                self.append(row)
+            else:
+                raise Exception("matrix column number should be ", len(self[0]), "now get", len(row))
 
     def transpose(self):
         transposed_matrix = Matrix()
@@ -244,4 +245,3 @@ def square_root_linear_approximate():
     c = end_matrix[1][-1]
     y = int(input())
     print((y - c)/m)
-
