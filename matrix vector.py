@@ -85,7 +85,6 @@ class Matrix(list):
         projection_matrix = self.multiply_matrix(inverse_AtA, matrixAt)
         return projection_matrix
 
-
     def multiply_vector(self, vector):
         answer = list()
         for i in range(len(self)):
@@ -94,6 +93,7 @@ class Matrix(list):
                 sum += vector[j] * self[i][j]
             answer.append(sum)
         return answer
+
     def augment_vector(self, vector):
         matrixA_augmented = copy.deepcopy(self)
         for i in range(len(vector)):
@@ -106,6 +106,20 @@ class Matrix(list):
         for vector in matrix2_transpose:
             resultant_matrix = resultant_matrix.augment_vector(vector)
         return resultant_matrix
+
+    def standardise(self):
+        matrix = copy.deepcopy(self)
+        for row in matrix:
+            divisor = 0
+            for i in range(len(row)):
+                if abs(row[i]) > 1e-10:
+                    divisor = row[i]
+                    break
+            if divisor != 0:
+                for i in range(len(row)):
+                    row[i] = row[i] / divisor
+        return matrix
+
     def gaussian_elimination(self, is_fiding_solution = False, is_finding_inverse = False):
         "找到該行一個非零的數，與其他所有行相減，使他們全部變爲0,下一列，找到一個除了上面用過那行以外的非零數，和其他所有行相減,直到行或列結束就停止記錄用過的行"
         matrix = copy.deepcopy(self)
@@ -135,8 +149,7 @@ class Matrix(list):
                     matrix[row] = RowSubtract(matrix[row], matrix[subtractor_row])
             used_row.append(subtractor_row)
 
-        for row in matrix:
-            RowStandardise(row)
+        matrix = matrix.standardise()
 
         # swapping rows
         for column in range(number_of_max_square):
@@ -173,17 +186,6 @@ class Matrix(list):
 def RowFillZero(row, column):
     for i in range(column - len(row)):
         row.append(0.0)
-
-
-def RowStandardise(row):
-    divisor = 0
-    for i in range(len(row)):
-        if abs(row[i]) > 1e-10:
-            divisor = row[i]
-            break
-    if divisor != 0:
-        for i in range(len(row)):
-            row[i] = row[i] / divisor
 
 
 def RowSubtract(row1, row2):
